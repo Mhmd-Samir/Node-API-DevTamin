@@ -65,31 +65,6 @@ router.get('/userName', readUsersByName);
 
 
 
-// // 2.To find the data using First Name and ID - in json format type
-
-// router.get('/userFind', async (req, res) => {
-//     try {
-//         const {id, firstName} = req.body;
-//         const user = await User.findById(id).find({firstName});
-
-        
-//         // const { firstName } = req.body;
-//         // const users = await User.find({firstName});
-
-//         if (!user) {
-//             return res.status(404).json({ message: 'User not match with the ID' });
-//         }
-
-//         res.status(200).json(user);
-//         // res.status(200).json(users);
-//     } catch (err) {
-//         res.status(500).json({ message: err.message });
-//     }
-// });
-
-
-
-
 
 // // 1.To Update a Product using ID
 

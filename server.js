@@ -11,15 +11,19 @@ const router = express.Router();
 
 const productRoutes = require("./routers/ProductRouter")
 
+const errorMiddleWare = require("./middlewares/errorMiddleware")
+
 
 app.use(express.json());
+
 
 // routes
 
 app.use('/api', productRoutes);
 app.use('/page', router);
 
-router.get('/', (req, res) => {   //router is defined to set a url 
+app.get('/', (req, res) => {   //router is defined to set a url 
+    // throw new Error("fake error");
     res.send("Hello Node API");
 })
 
@@ -32,6 +36,7 @@ app.get('/blog', (req, res) => {
 })
 
 
+app.use(errorMiddleWare);
 
 
 

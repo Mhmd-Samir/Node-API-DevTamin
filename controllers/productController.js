@@ -1,6 +1,7 @@
 const Product = require("../models/productModels")
 const User = require("../models/userModels")
 
+const asyncHandler = require('express-async-handler')
 
 const createProducts = async(req, res) => {
     try {
@@ -21,16 +22,18 @@ const createUsers = async(req,res) => {
     }
 };
 
-const readProducts = async(req, res) => {
+const readProducts = asyncHandler(async(req, res) => {
     try {
         const products = await Product.find({});
         res.status(200).json(products);
     }
     catch(error) {
-        console.log(error.message);
-        res.status(500).json({message : error.message});
+        // console.log(error.message);
+        res.status(500);
+        throw new Error(error.message)
+        // res.status(500).json({message : error.message});
     }
-};
+});
 
 const readUsers = async(req, res) => {
     try{
@@ -47,14 +50,16 @@ const readUsersById = async(req, res) => {
         const {id} = req.body;
         const users = await User.findById(id);
 
-        if (!users) {
-            return res.status(404).json({ message: 'User not match with the ID' });
-        }
+        // if (!users) {
+        //     return res.status(404).json({ message: 'User not match with the ID' });
+        // }
 
         res.status(200).json(users);
     }
     catch (err) {
-        res.status(500).json({message: err.message});
+        res.status(500);
+        throw new Error(err.message);
+        // res.status(500).json({message: err.message});
     }
 };
 
