@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 require('dotenv').config()
 
 const MONGOURL = process.env.MONGOURL;
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3002;
 
 const app = express();
 const Product = require("./models/productModels");
@@ -227,7 +227,7 @@ app.delete('/products/:id', async(req, res) => {
 mongoose.set("strictQuery", false);
 
 // connect mongodb localhost
-mongoose.connect('mongodb+srv://root:AdMin23145@cluster0.xezwnsg.mongodb.net/Node_API?retryWrites=true&w=majority')
+mongoose.connect(MONGOURL)
 
 .then(()=> {
     console.log("Connected to MongoDB")
