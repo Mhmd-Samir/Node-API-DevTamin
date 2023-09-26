@@ -1,7 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
+
+require('dotenv').config()
+
+const MONGO_URL = process.env.MONGO_URL;
+const PORT = process.env.PORT || 3002;
+
 const app = express();
-const port = 3002;
 const Product = require("./models/productModels");
 const User = require("./models/userModels")
 
@@ -44,13 +49,20 @@ app.post('/product', async(req, res) => {
 
 // // 2. To Create a Data
 
-app.post()
+app.post('/userCreate', async(req,res) => {
+    try {
+        const user = await User.create(req.body);
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json({message: err.message});
+    }
+})
 
 
 
 
 
-// // To Find a Data
+// // 1.To Read or Find a Data
 
 app.get('/products', async(req, res) => {
     try {
@@ -64,7 +76,22 @@ app.get('/products', async(req, res) => {
 })
 
 
-// // To fetch data using ID
+// // 2.To Read or Find a Data
+
+app.get('/userRead', async(req, res) => {
+    try{
+        const users = await User.find({});
+        res.status(200).json(users);
+    }
+    catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+
+
+
+// // 1.To fetch data using ID - find using params (URL) type 
 
 app.get('/products/:id', async(req, res) => {
     try {
@@ -79,25 +106,72 @@ app.get('/products/:id', async(req, res) => {
 })
 
 
-// // To fetch data using Name - It has some errors
+// // 2.To fetch data using ID - find using json format type
 
-// app.get('/products/:name', async(req, res) => {
-//     try {
-//         const {name} = req.params;
-//         const prod = await Product.findOne(name);
-//         if (!prod) {
-//             return res.status(404).json({ message: 'Product not found' });
-//         }
-//         res.status(200).json(prod);
-//     }
-//     catch(error) {
-//         console.log(error.message);
-//         res.status(500).json({message : error.message});
-//     }
-// })
+app.get('/userId', async(req, res) => {
+    try{
+        const {id} = req.body;
+        const users = await User.findById(id);
+
+        if (!users) {
+            return res.status(404).json({ message: 'User not match with the ID' });
+        }
+
+        res.status(200).json(users);
+    }
+    catch (err) {
+        res.status(500).json({message: err.message});
+    }
+})
 
 
-// // To Update a Product using ID
+
+// // 2.To find the data using First Name - in json format type
+
+app.get('/userName', async (req, res) => {
+    try {
+        const { firstName } = req.body;
+        const users = await User.find({firstName});
+
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'No users found with that first name' });
+        }
+
+        res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+
+// // 2.To find the data using First Name and ID - in json format type
+
+app.get('/userFind', async (req, res) => {
+    try {
+        const {id, firstName} = req.body;
+        const user = await User.findById(id).find({firstName});
+
+        
+        // const { firstName } = req.body;
+        // const users = await User.find({firstName});
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not match with the ID' });
+        }
+
+        res.status(200).json(user);
+        // res.status(200).json(users);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+
+
+
+// // 1.To Update a Product using ID
 
 app.put('/products/:id', async(req, res) => {
     try {
@@ -115,8 +189,24 @@ app.put('/products/:id', async(req, res) => {
 })
 
 
+// // 2.To Update a Username using ID 
 
-// // To Find Data and delete using ID
+app.put('/userUpdateId', async(req, res) => {
+    try{
+        const {id} = req.body;
+        const user = await User.findByIdAndUpdate(id, req.body);
+
+        res.status(200).json(user);
+    }
+    catch (err) {
+        res.status(500).json({message: err.message});
+    }
+})
+
+
+
+
+// // 1.To Find Data and delete using ID
 
 app.delete('/products/:id', async(req, res) => {
     try {
@@ -134,15 +224,15 @@ app.delete('/products/:id', async(req, res) => {
 
 
 
-
+mongoose.set("strictQuery", false);
 
 // connect mongodb localhost
 mongoose.connect("mongodb+srv://root:AdMin23145@cluster0.xezwnsg.mongodb.net/Node_API?retryWrites=true&w=majority")
 
 .then(()=> {
     console.log("Connected to MongoDB")
-    app.listen(port, () => {
-        console.log(`Node API is running on ${port}`);
+    app.listen(PORT, () => {
+        console.log(`Node API is running on ${PORT}`);
     })
 })
 .catch(err=> console.log("Error :" +err));
