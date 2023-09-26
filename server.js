@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 
 require('dotenv').config()
 
-const MONGO_URL = process.env.MONGO_URL;
-const PORT = process.env.PORT || 3002;
+const MONGOURL = process.env.MONGOURL;
+const PORT = process.env.PORT;
 
 const app = express();
 const Product = require("./models/productModels");
@@ -227,7 +227,7 @@ app.delete('/products/:id', async(req, res) => {
 mongoose.set("strictQuery", false);
 
 // connect mongodb localhost
-mongoose.connect("mongodb+srv://root:AdMin23145@cluster0.xezwnsg.mongodb.net/Node_API?retryWrites=true&w=majority")
+mongoose.connect('mongodb+srv://root:AdMin23145@cluster0.xezwnsg.mongodb.net/Node_API?retryWrites=true&w=majority')
 
 .then(()=> {
     console.log("Connected to MongoDB")
